@@ -2,12 +2,16 @@
 
 Cross-platform application that works together with the [azrael-lab.xyz](https://azrael-lab.xyz/) project.
 
+> ⚠️ **Status: active development.** The app is in an early stage — it may not work at all, or it may work with bugs and glitches.
+
 Shared UI lives in `composeApp`, the native layer (C++/JNI) in `app`, and the desktop wrapper in `desktopApp`.
 
 <Tabs>
 <Tab label="English">
 
 ## Overview
+
+> ⚠️ **Status: active development.** The app is in an early stage — it may not work at all, or it may work with bugs and glitches.
 
 AZRAEL-APP is a small cross-platform app built with Compose Multiplatform. It connects to and interacts with the azrael-lab.xyz project — the same UI is shared between native Android and desktop builds.
 
@@ -80,6 +84,8 @@ License: CC BY-NC-SA 4.0 (see `LICENSE`).
 
 ## Обзор
 
+> ⚠️ **Статус: активная разработка.** Приложение на ранней стадии — может вообще не работать или работать со сбоями.
+
 AZRAEL-APP — небольшое кроссплатформенное приложение на Compose Multiplatform. Оно взаимодействует с проектом azrael-lab.xyz — один и тот же интерфейс используется и в нативном Android, и в десктопной сборке.
 
 Платформы:
@@ -150,6 +156,8 @@ makepkg -si
 <Tab label="中文">
 
 ## 概述
+
+> ⚠️ **状态：积极开发中。** 应用处于早期阶段 — 可能无法运行，也可能存在各种问题。
 
 AZRAEL-APP 是一个基于 Compose Multiplatform 的跨平台应用，与 azrael-lab.xyz 项目协同工作 — Android 原生与桌面版共享同一套界面。
 
