@@ -1,9 +1,9 @@
 # Maintainer: azrael <typ.onepatop@gmail.com>
-# Сборка: макпэкг -si  (см. https://wiki.archlinux.org/title/PKGBUILD)
+# Build: makepkg -si (see https://wiki.archlinux.org/title/PKGBUILD)
 pkgname=azrael-app
 pkgver=1.0.0
 pkgrel=1
-pkgdesc="Proxmox management client (Compose Multiplatform, Android 13+/Windows 10/11/Linux)"
+pkgdesc="AZRAEL-APP client for azrael-lab.xyz (Compose Multiplatform, Android 13+/Windows 10/11/Linux)"
 arch=('x86_64')
 url="https://github.com/PAF-DE0H1SS/AZRAEL-APP"
 license=('custom:CC-BY-NC-SA')
@@ -36,7 +36,7 @@ EOF
 [Desktop Entry]
 Type=Application
 Name=AZRAEL
-Comment=Proxmox management client
+Comment=Client for azrael-lab.xyz
 Exec=/usr/bin/azrael
 Terminal=false
 Categories=Utility;

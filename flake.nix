@@ -1,5 +1,5 @@
 {
-  description = "AZRAEL-APP — Proxmox management client (Android 13+ / Windows 10/11 / Linux)";
+  description = "AZRAEL-APP — client for azrael-lab.xyz (Android 13+ / Windows 10/11 / Linux)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -49,7 +49,7 @@
             [Desktop Entry]
             Type=Application
             Name=AZRAEL
-            Comment=Proxmox management client
+            Comment=Client for azrael-lab.xyz
             Exec=$out/bin/azrael
             Terminal=false
             Categories=Utility;
@@ -57,7 +57,7 @@
           '';
 
           meta = with pkgs.lib; {
-            description = "Proxmox management client";
+            description = "Client for azrael-lab.xyz";
             platforms = platforms.linux;
           };
         };
