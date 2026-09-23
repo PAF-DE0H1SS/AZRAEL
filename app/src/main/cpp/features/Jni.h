@@ -77,7 +77,7 @@ private:
 
 // Класс-кэш: кэширует jclass/jmethodID (глобальные ссылки), чтобы не
 // искать методы на каждый вызов. Типичное использование:
-//   static JniClass cls(env, "xyz/azraellab/app/ProxmoxBridge");
+//   static JniClass cls(env, "xyz/azraellab/app/NativeBridge");
 //   cls.method(env, "onResult", "(Ljava/lang/String;B)V");
 class JniClass {
 public:

@@ -20,13 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-/**
- * Общий экран Compose Multiplatform.
- * Один и тот же код, дизайн и поведение на Android (:app), Windows (:desktopApp) и Linux.
- *
- * @param nativeGreeting строка из нативного слоя платформы
- * (на Android — из C++ через JNI, на desktop — локальная заглушка).
- */
 @Composable
 fun App(nativeGreeting: () -> String) {
     var counter by remember { mutableStateOf(0) }

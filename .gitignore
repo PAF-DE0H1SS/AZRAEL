@@ -16,3 +16,5 @@ local.properties
 .kotlin
 .history
 !gradle/wrapper/gradle-wrapper.jar
+/result
+/.direnv

@@ -16,10 +16,10 @@ compose.desktop {
         mainClass = "xyz.azraellab.desktop.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.AppImage)
             packageName = "xyz.azraellab.app"
             packageVersion = "1.0.0"
-            description = "AZRAEL - Proxmox management client"
+            description = "AZRAEL - client for azrael-lab.xyz"
             vendor = "AZRAEL Lab"
         }
     }
