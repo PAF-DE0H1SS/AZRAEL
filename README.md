@@ -4,7 +4,7 @@
 [![Platform: Windows 10/11](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=flat&logo=windows&logoColor=white)](https://github.com/PAF-DE0H1SS/AZRAEL-APP)
 [![Platform: Linux](https://img.shields.io/badge/Linux-deb%20%E2%94%82%20PKGBUILD%20%E2%94%82%20flake-FCC624?style=flat&logo=linux&logoColor=black)](https://github.com/PAF-DE0H1SS/AZRAEL-APP)
 [![Language: Kotlin](https://img.shields.io/badge/Language-Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://github.com/PAF-DE0H1SS/AZRAEL-APP)
-[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-red?style=flat)](LICENSE)
+[![License: Dual (PolyForm NC 1.0.0)](https://img.shields.io/badge/License-Dual%20%E2%80%94%20PolyForm%20NC%201.0.0-red?style=flat)](LICENSE)
 [![CI: auto-build](https://img.shields.io/github/actions/workflow/status/PAF-DE0H1SS/AZRAEL-APP/build.yml?branch=develop&style=flat&label=CI%20auto-build)](https://github.com/PAF-DE0H1SS/AZRAEL-APP/actions)
 
 > ⚠️ **Status: active development.** The app is in an early stage — it may not work at all, or it may work with bugs and glitches.
@@ -98,7 +98,7 @@ makepkg -si
 
 ### 📄 License
 
-CC BY-NC-SA 4.0 (see [LICENSE](LICENSE)).
+Dual licensing: **PolyForm Noncommercial 1.0.0** for noncommercial use + the author's personal terms (Parts 1–3), including revenue share and back-feed clauses. Commercial use requires a written agreement with the author. See [LICENSE](LICENSE).
 
 </Tab>
 <Tab label="Русский">
@@ -183,7 +183,7 @@ makepkg -si
 
 ### 📄 Лицензия
 
-CC BY-NC-SA 4.0 (см. [LICENSE](LICENSE)).
+Двойное лицензирование: **PolyForm Noncommercial 1.0.0** для некоммерческого использования + персональные условия Правообладателя (Части 1–3), включая revenue share и back-feed clause. Коммерческое использование требует письменного договора с автором. См. [LICENSE](LICENSE).
 
 </Tab>
 <Tab label="中文">
@@ -268,7 +268,7 @@ makepkg -si
 
 ### 📄 许可证
 
-CC BY-NC-SA 4.0（见 [LICENSE](LICENSE)）。
+双重许可：非商业使用遵循 **PolyForm Noncommercial 1.0.0**，另有作者个人条款（第 1–3 部分），包括收益分成（Revenue Share）与回馈条款（Back-feed）。商业使用需与作者签订书面协议。详见 [LICENSE](LICENSE)。
 
 </Tab>
 </Tabs>
