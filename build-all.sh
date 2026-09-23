@@ -2,9 +2,10 @@
 # ============================================================
 # AZRAEL: автосборка всех платформ (Android + Desktop).
 #
-#  Запуск:  ./build-all.sh [release|dev]
+#  Запуск:  ./build-all.sh [release|dev|linux]
 #    release  - релиз: debug+release APK + desktop uber-JAR (по умолчанию)
 #    dev      - быстрая: только debug APK + desktop uber-JAR
+#    linux    - Linux-форматы: AppImage + .deb (Ubuntu/Debian/Arch/NixOS)
 #
 #  Код/дизайн/функционал общие (composeApp). Нативный C++ (JNI) -
 #  только Android, на desktop передаётся заглушка.
@@ -65,8 +66,11 @@ case "$MODE" in
   release)
     ./gradlew :app:assembleDebug :app:assembleRelease :desktopApp:createDistributable :desktopApp:packageUberJarForCurrentOS
     ;;
+  linux)
+    ./gradlew :desktopApp:packageAppImage :desktopApp:packageDeb
+    ;;
   *)
-    echo "Неизвестный режим: $MODE (release|dev)" >&2
+    echo "Неизвестный режим: $MODE (release|dev|linux)" >&2
     exit 1
     ;;
 esac

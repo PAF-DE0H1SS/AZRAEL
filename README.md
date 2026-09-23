@@ -1,49 +1,70 @@
-# AZRAEL
+# AZRAEL-APP
 
-AZRAEL — кроссплатформенное приложение на **Compose Multiplatform** (Kotlin + C++/JNI).
+Кроссплатформенный клиент для управления Proxmox на Compose Multiplatform.
 
-- **Android** (`:app`) — Activity + C++ через CMake/JNI (`nativeString`)
-- **Windows 10/11** (`:desktopApp`) — нативный JVM-билд, MSI-инсталлятор
-- **Shared UI** (`:composeApp`) — единый Material3-интерфейс (счётчик + текстовое поле + приветствие из нативного кода) для обеих платформ
-- **R8** minify + shrink resources в release (debug ~31 MB → release ~15 MB)
+Платформы:
 
-## Модули
+- Android 13+
+- Windows 10/11 (MSI)
+- Linux: Ubuntu / Debian (.deb), Arch (PKGBUILD), NixOS (flake)
 
-| Модуль | Тип | Роль |
-|--------|-----|------|
-| `app` | Android application | C++/CMake/JNI, запускает общий UI |
-| `composeApp` | KMP library | общий UI (commonMain): `App.kt`, `expect fun platformName()` |
-| `desktopApp` | JVM application | Windows/desktop-обвязка, `packageMsi` |
-
-## Версии
-
-AGP 9.2.1 · Kotlin 2.4.20 · Compose Multiplatform 1.12.1 · compileSdk 37 · minSdk 33 · targetSdk 36 · Gradle 9.4.1 · JDK 17+ (для desktop нужен JDK с `jpackage`).
+Общая часть — в `composeApp`, нативный слой (C++/JNI) — в `app`,
+десктопная обвязка — в `desktopApp`.
 
 ## Сборка
 
-```bash
-# Всё сразу (Android debug+release + desktop)
-./gradlew :app:assembleDebug :app:assembleRelease :desktopApp:packageUberJarForCurrentOS :desktopApp:createDistributable
+Android (debug / release):
 
-# Windows MSI (только на Windows-хосте)
+```
+./gradlew :app:assembleDebug
+./gradlew :app:assembleRelease
+```
+
+Windows (MSI, собирается на Windows-хосте):
+
+```
 ./gradlew :desktopApp:packageMsi
 ```
 
-Или скриптами-обёртками:
-- Linux/NixOS: `./build-all.sh [dev]` → артефакты в `build/dist/`
-- Windows: `build-all.bat` → `build\dist\AZRAEL-win10-11.msi`
+Linux (AppImage + .deb):
 
-CI (GitHub Actions) собирает APK и MSI автоматически на push в `main`/`develop` и на PR.
+```
+./gradlew :desktopApp:packageAppImage :desktopApp:packageDeb
+```
 
-## Git-flow
+Единый скрипт: `./build-all.sh [release|dev|linux]`.
 
-| Ветка | Назначение | Сливается в |
-|-------|-----------|-------------|
-| `main` | стабильный продакшн | — |
-| `develop` | интеграция, ветвление фич | `main` (через release/PR) |
-| `feature/*` | новые функции | `develop` |
-| `release/*` | подготовка релиза | `main` + `develop` |
-| `hotfix/*` | срочные фиксы продакшна | `main` + `develop` |
+### NixOS
 
-- `main` и `develop` защищены: обязательный PR, 1 approval, обязательные статус-чеки `android` + `windows`, запрещены force-push и delete.
-- PR обязателен — прямой push в защищённые ветки запрещён.
+Внешний флейк (github:NixOS/nixpkgs):
+
+```
+nix run github:PAF-DE0H1SS/AZRAEL-APP
+```
+
+Или локально (нужен сетевой доступ для gradle):
+
+```
+nix build . --option sandbox false
+nix run .
+```
+
+Dev-окружение с JDK/cmake/ninja:
+
+```
+nix develop
+```
+
+### Arch
+
+```
+makepkg -si
+```
+
+## Ветки
+
+- `main` — стабильная
+- `develop` — интеграционная
+- `feature/*`, `release/*`, `hotfix/*` — по ситуации
+
+Лицензия: CC BY-NC-SA 4.0 (см. `LICENSE`).
