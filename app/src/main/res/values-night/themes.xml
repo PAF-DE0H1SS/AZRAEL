@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Night theme (без MaterialComponents; UI на Compose Multiplatform). -->
+    <style name="Theme.AZRAEL" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:colorPrimary">@color/purple_200</item>
+        <item name="android:colorPrimaryDark">@color/purple_700</item>
+        <item name="android:colorAccent">@color/teal_200</item>
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
+</resources>

@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme (без MaterialComponents; UI на Compose Multiplatform). -->
+    <style name="Theme.AZRAEL" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="android:colorPrimary">@color/purple_500</item>
+        <item name="android:colorPrimaryDark">@color/purple_700</item>
+        <item name="android:colorAccent">@color/teal_200</item>
+        <item name="android:statusBarColor">@color/purple_700</item>
+        <!-- Customize your theme here. -->
+    </style>
+</resources>
