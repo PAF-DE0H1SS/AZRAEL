@@ -15,8 +15,8 @@ Shared UI lives in `composeApp`, the native layer (C++/JNI) in `app`, and the de
 
 ## Language / Язык / 语言
 
-<Tabs>
-<Tab label="English">
+<details open>
+<summary><b>🇬🇧 English</b></summary>
 
 ### ✨ Overview
 
@@ -100,8 +100,9 @@ makepkg -si
 
 Dual licensing: **PolyForm Noncommercial 1.0.0** for noncommercial use + the author's personal terms (Parts 1–3), including revenue share and back-feed clauses. Commercial use requires a written agreement with the author. See [LICENSE](LICENSE).
 
-</Tab>
-<Tab label="Русский">
+</details>
+<details>
+<summary><b>🇷🇺 Русский</b></summary>
 
 ### ✨ Обзор
 
@@ -185,8 +186,9 @@ makepkg -si
 
 Двойное лицензирование: **PolyForm Noncommercial 1.0.0** для некоммерческого использования + персональные условия Правообладателя (Части 1–3), включая revenue share и back-feed clause. Коммерческое использование требует письменного договора с автором. См. [LICENSE](LICENSE).
 
-</Tab>
-<Tab label="中文">
+</details>
+<details>
+<summary><b>🇨🇳 中文</b></summary>
 
 ### ✨ 概述
 
@@ -270,5 +272,4 @@ makepkg -si
 
 双重许可：非商业使用遵循 **PolyForm Noncommercial 1.0.0**，另有作者个人条款（第 1–3 部分），包括收益分成（Revenue Share）与回馈条款（Back-feed）。商业使用需与作者签订书面协议。详见 [LICENSE](LICENSE)。
 
-</Tab>
-</Tabs>
+</details>
