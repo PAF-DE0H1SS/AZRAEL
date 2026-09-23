@@ -58,6 +58,12 @@
 
           meta = with pkgs.lib; {
             description = "Client for azrael-lab.xyz";
+            license = {
+              shortName = "PolyForm-Noncommercial-1.0.0";
+              fullName = "Dual licensing: PolyForm Noncommercial 1.0.0 + author terms (revenue share, back-feed)";
+              url = "https://polyformproject.org/licenses/noncommercial/1.0.0";
+              free = false;
+            };
             platforms = platforms.linux;
           };
         };
