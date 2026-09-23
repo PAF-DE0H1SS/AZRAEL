@@ -12,6 +12,6 @@ fun main() = application {
         title = "AZRAEL",
         state = rememberWindowState(width = 720.dp, height = 480.dp)
     ) {
-        App(nativeGreeting = { "not available on desktop (JNI is Android-only)" })
+        App(nativeGreeting = { "JNI is Android-only" })
     }
 }

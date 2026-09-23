@@ -8,7 +8,7 @@
 
 namespace az {
 
-// Утилиты времени (C++17). Proxmox API отдаёт время в виде epoch-секунд
+// Утилиты времени (C++17). API отдаёт время как epoch-секунды
 // (status/uptime/running) и ISO8601 в логах и задачах.
 
 namespace timex {
@@ -91,7 +91,7 @@ inline int64_t parse_iso8601(std::string_view s) {
     return static_cast<int64_t>(t) - (off_hh * 3600 + off_mm * 60);
 }
 
-// "uptime: 12345 сек" -> "3ч 25м" (как в Proxmox).
+// "uptime: 12345 сек" -> "3ч 25м".
 inline std::string human_uptime(int64_t sec) {
     if (sec < 60) return std::to_string(sec) + "s";
     int64_t m = sec / 60;
