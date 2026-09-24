@@ -16,8 +16,15 @@ class SessionBox {
 
     val hasSession: Boolean get() = sessionToken.isNotEmpty() && serverPublicKey != null
 
-    fun startHandshake(): Envelope {
-        val payloadJson = """{"eph_pub":"${b64(keyPair.publicKey)}"}"""
+    /**
+     * Собирает конверт рукопожатия. Необязательное поле `auth` — site-сессия:
+     * если она валидна, сервер повышает роль канала (guest → standard/admin)
+     * и отдаёт её в ответе init.
+     */
+    fun startHandshake(auth: String? = null): Envelope {
+        val eph = b64(keyPair.publicKey)
+        val payloadJson = if (auth.isNullOrBlank()) """{"eph_pub":"$eph"}"""
+        else """{"eph_pub":"$eph","auth":"${auth.replace("\"", "\\\"")}"}"""
         return Envelope(
             id = newId(),
             ts = nowSec(),
