@@ -84,6 +84,41 @@ jobs:
         run: |
           ./gradlew :desktopApp:packageAppImage :desktopApp:packageDeb
 
+      - name: Package real AppImage (appimagetool)
+        run: |
+          set -euxo pipefail
+          curl -fsSL https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -o /tmp/appimagetool
+          chmod +x /tmp/appimagetool
+
+          APP_DIR=desktopApp/build/compose/binaries/main/app
+          SRC=$APP_DIR/xyz.azraellab.app
+          AD=/tmp/azrael-appdir
+          rm -rf "$AD"
+          mkdir -p "$AD"
+          cp -r "$SRC/bin" "$AD/bin"
+          cp -r "$SRC/lib" "$AD/lib"
+          cp "$SRC/lib/xyz.azraellab.app.png" "$AD/xyz.azraellab.app.png"
+          cat > "$AD/xyz.azraellab.app.desktop" <<'EOF'
+          [Desktop Entry]
+          Name=AZRAEL-APP
+          Comment=AZRAEL desktop application (Compose Multiplatform)
+          Exec=xyz.azraellab.app
+          Icon=xyz.azraellab.app
+          Type=Application
+          Categories=Utility;Application;
+          Terminal=false
+          EOF
+          cat > "$AD/AppRun" <<'EOF'
+          #!/bin/sh
+          HERE="$(dirname "$(readlink -f "${0}")")"
+          exec "$HERE/bin/xyz.azraellab.app" "$@"
+          EOF
+          chmod +x "$AD/AppRun" "$AD/bin/xyz.azraellab.app"
+          APP_VERSION=$(sed -n 's/.*<app-version>\([^<]*\)<\/app-version>.*/\1/p' "$SRC/lib/app/.jpackage.xml")
+          export ARCH=x86_64
+          /tmp/appimagetool --appimage-extract-and-run "$AD" "$APP_DIR/xyz.azraellab.app-$APP_VERSION.AppImage"
+          ls -la "$APP_DIR"
+
       - name: Upload Linux packages
         uses: actions/upload-artifact@v7.0.1
         with:
