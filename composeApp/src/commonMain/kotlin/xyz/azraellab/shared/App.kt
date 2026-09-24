@@ -37,7 +37,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import xyz.azraellab.shared.core.protocol.defaultGatewayUrl
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -190,7 +195,7 @@ private fun MainPane(
         when (index) {
             0 -> HomeScreen(counter, onCounter, text, onText, nativeGreeting, wide, tall)
             1 -> PlaceholderScreen("Профиль", "Здесь будет профиль и синхронизация через защищённый канал.")
-            else -> PlaceholderScreen("Настройки", "Настройки интерфейса и подключения.")
+            else -> SettingsScreen()
         }
     }
 }
@@ -271,6 +276,68 @@ private fun PlaceholderScreen(title: String, subtitle: String) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.7f))
+    }
+}
+
+@Composable
+private fun SettingsScreen() {
+    // URL шлюза не хардкодится: подставляется из runtime-конфига (env/настройки) или вручную.
+    var gateway by remember { mutableStateOf(defaultGatewayUrl() ?: "") }
+    var statusLine by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    var channel by remember { mutableStateOf<xyz.azraellab.shared.core.protocol.GatewayClient?>(null) }
+
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text("Настройки", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Text("Защищённый канал", style = MaterialTheme.typography.titleMedium)
+
+        GlassCard(modifier = Modifier.fillMaxWidth()) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Label("Шлюз (runtime-конфиг)")
+                OutlinedTextField(
+                    value = gateway,
+                    onValueChange = { gateway = it },
+                    label = { Text("https://…/gateway/v1") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = AzraelViolet,
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.25f)
+                    )
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    AccentButton("Подключиться") {
+                        statusLine = "…"
+                        scope.launch {
+                            channel = null
+                            statusLine = "Проверяю…"
+                            val client = xyz.azraellab.shared.core.protocol.GatewayClient(gateway)
+                            val hs = withContext(Dispatchers.IO) { client.connect() }
+                            channel = if (hs != null) client else null
+                            statusLine = if (hs != null) "Канал установлен (ключ X25519 обменян)"
+                            else "Сбой рукопожатия: шлюз недоступен или отклонён"
+                        }
+                    }
+                    AccentButton("Статус") {
+                        val c = channel
+                        if (c == null) statusLine = "Нет активного канала"
+                        else scope.launch {
+                            statusLine = "…"
+                            val reply = withContext(Dispatchers.IO) { c.sayStatus() }
+                            statusLine = reply?.let { "Шлюз: $it" } ?: "Ошибка status"
+                        }
+                    }
+                }
+                Text(statusLine, style = MaterialTheme.typography.bodyMedium, color = AzraelCyan)
+            }
+        }
+
+        Text(
+            "Защита: X25519 (ECDH) → AES-256-GCM, Envelope с подпись AAD (op|id|ts|v), " +
+                "анти-реплей, skew ±120 c. Ключ клиента генерируется при запуске и никуда не уходит.",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(alpha = 0.6f)
+        )
     }
 }
 

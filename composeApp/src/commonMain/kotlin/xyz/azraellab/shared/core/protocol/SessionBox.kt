@@ -13,7 +13,6 @@ class SessionBox {
     val keyPair: KeyPairData = Crypto.keyPair()
     private var serverPublicKey: ByteArray? = null
     private var sessionToken: String = ""
-    private var envelopeCounter: Long = 0
 
     val hasSession: Boolean get() = sessionToken.isNotEmpty() && serverPublicKey != null
 
@@ -37,17 +36,20 @@ class SessionBox {
         return true
     }
 
+    // Зашифрованный запрос: AAD детерминирован из полей конверта (op|id|ts|version),
+    // поэтому сервер может проверить целостность атрибутов без знания счётчика клиента.
     fun seal(op: String, plainBody: ByteArray): Envelope? {
         val serverPub = serverPublicKey ?: return null
         if (!hasSession) return null
         val shared = Crypto.sharedSecret(keyPair.privateKey, serverPub)
         val nonce = randomBytes(12)
-        val aad = buildAAD(op, envelopeCounter)
+        val id = newId()
+        val ts = nowSec()
+        val aad = aad(op, id, ts)
         val tag = Crypto.encrypt(shared, aad, plainBody, nonce) ?: return null
-        envelopeCounter++
         return Envelope(
-            id = newId(),
-            ts = nowSec(),
+            id = id,
+            ts = ts,
             op = op,
             session = sessionToken,
             payload = b64(tag),
@@ -55,20 +57,18 @@ class SessionBox {
         )
     }
 
+    // Расшифровка ответа сервера: тот же детерминированный AAD из полей конверта.
     fun open(env: Envelope): ByteArray? {
         val serverPub = serverPublicKey ?: return null
         val shared = Crypto.sharedSecret(keyPair.privateKey, serverPub)
         val cipher = try { Base64Codec.decode(env.payload) } catch (e: Exception) { return null }
         val nonce = try { Base64Codec.decode(env.nonce) } catch (e: Exception) { return null }
-        val aad = serverAAD(env)
+        val aad = aad(env.op, env.id, env.ts)
         return Crypto.decrypt(shared, aad, cipher, nonce)
     }
 
-    private fun buildAAD(op: String, counter: Long): ByteArray =
-        listOf(op, counter.toString(), Protocol.VERSION.toString()).joinToString("|").toByteArray()
-
-    private fun serverAAD(env: Envelope): ByteArray =
-        listOf(env.op, env.id, env.ts.toString(), Protocol.VERSION.toString()).joinToString("|").toByteArray()
+    private fun aad(op: String, id: String, ts: Long): ByteArray =
+        listOf(op, id, ts.toString(), Protocol.VERSION.toString()).joinToString("|").toByteArray()
 
     private fun newId(): String {
         val r = randomBytes(16)
