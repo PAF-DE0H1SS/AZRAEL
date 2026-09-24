@@ -283,6 +283,9 @@ private fun PlaceholderScreen(title: String, subtitle: String) {
 private fun SettingsScreen() {
     // URL шлюза не хардкодится: подставляется из runtime-конфига (env/настройки) или вручную.
     var gateway by remember { mutableStateOf(defaultGatewayUrl() ?: "") }
+    // Auth — опциональная site-сессия: её валидность решает сервер (guest → admin).
+    var authToken by remember { mutableStateOf("") }
+    var role by remember { mutableStateOf<String?>(null) }
     var statusLine by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     var channel by remember { mutableStateOf<xyz.azraellab.shared.core.protocol.GatewayClient?>(null) }
@@ -305,6 +308,18 @@ private fun SettingsScreen() {
                         unfocusedBorderColor = Color.White.copy(alpha = 0.25f)
                     )
                 )
+                Label("Авторизация (необязательно, site-сессия)")
+                OutlinedTextField(
+                    value = authToken,
+                    onValueChange = { authToken = it },
+                    label = { Text("токен сессии") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = AzraelCyan,
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.25f)
+                    )
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     AccentButton("Подключиться") {
                         statusLine = "…"
@@ -312,9 +327,12 @@ private fun SettingsScreen() {
                             channel = null
                             statusLine = "Проверяю…"
                             val client = xyz.azraellab.shared.core.protocol.GatewayClient(gateway)
-                            val hs = withContext(Dispatchers.IO) { client.connect() }
+                            val hs = withContext(Dispatchers.IO) {
+                                client.connect(authToken.ifBlank { null })
+                            }
                             channel = if (hs != null) client else null
-                            statusLine = if (hs != null) "Канал установлен (ключ X25519 обменян)"
+                            role = hs?.role
+                            statusLine = if (hs != null) "Канал установлен · роль: ${hs.role}"
                             else "Сбой рукопожатия: шлюз недоступен или отклонён"
                         }
                     }
@@ -327,10 +345,22 @@ private fun SettingsScreen() {
                             statusLine = reply?.let { "Шлюз: $it" } ?: "Ошибка status"
                         }
                     }
+                    AccentButton("Отключиться") {
+                        val c = channel
+                        if (c == null) { role = null; statusLine = "Нет активного канала" }
+                        else scope.launch {
+                            val ok = withContext(Dispatchers.IO) { c.disconnect() }
+                            channel = null; role = null
+                            statusLine = if (ok) "Канал закрыт" else "Shutdown: ответ не получен"
+                        }
+                    }
                 }
                 Text(statusLine, style = MaterialTheme.typography.bodyMedium, color = AzraelCyan)
             }
         }
+
+        // Диспетчер операций: что доступно зависит от роли (guest: status/hello, standard+: ai.chat, admin: cmd.*).
+        OpsPanel(channel, role)
 
         Text(
             "Защита: X25519 (ECDH) → AES-256-GCM, Envelope с подпись AAD (op|id|ts|v), " +
@@ -338,6 +368,72 @@ private fun SettingsScreen() {
             style = MaterialTheme.typography.bodySmall,
             color = Color.White.copy(alpha = 0.6f)
         )
+    }
+}
+
+// Панель диспетчера: hello/ai.chat/cmd.ping/cmd.info с индикацией прав по роли.
+@Composable
+private fun OpsPanel(channel: xyz.azraellab.shared.core.protocol.GatewayClient?, role: String?) {
+    var output by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    var prompt by remember { mutableStateOf("") }
+
+    fun runOp(run: (xyz.azraellab.shared.core.protocol.GatewayClient) -> String?) {
+        val c = channel
+        if (c == null) { output = "Сначала подключитесь к шлюзу."; return }
+        scope.launch {
+            output = "…"
+            output = withContext(Dispatchers.IO) { run(c) } ?: "Операция не выполнена (ошибка/отказ прав)"
+        }
+    }
+
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text("Роль:", style = MaterialTheme.typography.labelMedium)
+        Box(
+            modifier = Modifier
+                .background(
+                    when (role) {
+                        "admin" -> AzraelRose.copy(alpha = 0.3f)
+                        "standard" -> AzraelCyan.copy(alpha = 0.3f)
+                        else -> AzraelViolet.copy(alpha = 0.3f)
+                    },
+                    RoundedCornerShape(10.dp)
+                )
+                .padding(horizontal = 10.dp, vertical = 4.dp)
+        ) {
+            Text(role ?: "—", color = Color.White, style = MaterialTheme.typography.labelMedium)
+        }
+    }
+
+    GlassCard(modifier = Modifier.fillMaxWidth()) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("Диспетчер операций", style = MaterialTheme.typography.titleMedium)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AccentButton("hello") { runOp { it.sayHello() } }
+                AccentButton("ai.chat") { runOp { it.aiChat(if (prompt.isBlank()) "Привет" else prompt) } }
+                AccentButton("cmd.ping") { runOp { it.cmdPing() } }
+                AccentButton("cmd.info") { runOp { it.cmdInfo() } }
+            }
+            if (role != "standard" && role != "admin") {
+                Text(
+                    "guest: доступны status/hello. Расширьте права: подключитесь с site-сессией.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.55f)
+                )
+            }
+            OutlinedTextField(
+                value = prompt,
+                onValueChange = { prompt = it },
+                label = { Text("Сообщение для ai.chat") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = AzraelCyan,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.25f)
+                )
+            )
+            Text(output, style = MaterialTheme.typography.bodyMedium, color = AzraelCyan)
+        }
     }
 }
 
