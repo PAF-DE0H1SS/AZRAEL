@@ -62,6 +62,7 @@ import xyz.azraellab.shared.ui.AzraelViolet
 import xyz.azraellab.shared.ui.GlassBackground
 import xyz.azraellab.shared.ui.glass
 
+// Пункты навигации: одинаковый набор для бокового rail (ПК) и нижнего бара (телефон).
 private data class RailItem(val label: String, val icon: ImageVector)
 
 private val mainRails = listOf(
@@ -77,6 +78,8 @@ fun App(nativeGreeting: () -> String) {
     AzraelTheme {
         GlassBackground {
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                // Ширина >= 700dp считаем "широким" экраном (планшет/ПК): боковой rail,
+                // иначе — телефон: нижняя навигация. Высота влияет только на размер заголовка.
                 val wide = maxWidth >= 700.dp
                 val tall = maxHeight >= 560.dp
                 var counter by remember { mutableStateOf(0) }
@@ -125,6 +128,7 @@ fun App(nativeGreeting: () -> String) {
     }
 }
 
+// Нижняя навигация для телефонов: три пункта поверх стеклянной подложки.
 @Composable
 private fun BottomBar(selected: Int, onSelect: (Int) -> Unit) {
     SurfaceGlass(shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp)) {
@@ -141,13 +145,14 @@ private fun BottomBar(selected: Int, onSelect: (Int) -> Unit) {
     }
 }
 
+// Боковой NavigationRail для широких экранов: логотип, пункты, индикатор статуса.
 @Composable
 private fun RowScope.SideRail(selected: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
     SurfaceGlass(shape = RoundedCornerShape(24.dp), modifier = modifier.padding(12.dp)) {
         NavigationRail(containerColor = Color.Transparent) {
             Spacer(Modifier.height(10.dp))
             Text(
-                "AZRAEL",
+                "AZRAEL-APP",
                 modifier = Modifier.padding(horizontal = 8.dp),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
@@ -168,6 +173,7 @@ private fun RowScope.SideRail(selected: Int, onSelect: (Int) -> Unit, modifier: 
     }
 }
 
+// Основная рабочая область: переключение между разделами по индексу навигации.
 @Composable
 private fun MainPane(
     index: Int,
@@ -209,7 +215,7 @@ private fun HomeScreen(
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            "AZRAEL",
+            "AZRAEL-APP",
             style = headingStyle,
             fontWeight = FontWeight.Bold
         )

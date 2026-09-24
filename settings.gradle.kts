@@ -22,7 +22,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AZRAEL"
+rootProject.name = "AZRAEL-APP"
 include(":app")
 include(":composeApp")
 include(":desktopApp")
