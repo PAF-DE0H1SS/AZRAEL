@@ -35,7 +35,7 @@ EOF
   cat > "$pkgdir/usr/share/applications/azrael.desktop" <<EOF
 [Desktop Entry]
 Type=Application
-Name=AZRAEL
+Name=AZRAEL-APP
 Comment=Client for azrael-lab.xyz
 Exec=/usr/bin/azrael
 Terminal=false

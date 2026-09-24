@@ -9,6 +9,8 @@ import javax.crypto.KeyAgreement
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
+// Реализация крипто-примитивов для Desktop (JVM) на Java Cryptography Architecture:
+// X25519 ECDH, HKDF-подобная деривация заменена прямым shared-secret, AEAD AES-256-GCM.
 actual object Crypto {
 
     private val rnd = SecureRandom()

@@ -9,6 +9,9 @@ import javax.crypto.KeyAgreement
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
+// Реализация крипто-примитивов для Android (JVM/JCA, аналогично desktop-версии):
+// X25519 ECDH, AEAD AES-256-GCM с 128-битным тегом. Функции возвращают null
+// при любой ошибке — никогда не бросают исключений наружу.
 actual object Crypto {
 
     private val rnd = SecureRandom()

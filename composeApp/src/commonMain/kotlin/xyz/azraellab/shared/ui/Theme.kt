@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+// Фирменные цвета проекта azrael-lab.xyz (violet / cyan / rose).
 val AzraelViolet = Color(0xFF9D6BFF)
 val AzraelCyan = Color(0xFF4DD8FF)
 val AzraelRose = Color(0xFFFF5CA8)
@@ -84,6 +85,8 @@ private fun AmbientGlow(color: Color, size: Dp, alpha: Float, modifier: Modifier
     )
 }
 
+// «Стеклянная» обёртка карточки: скруглённые углы, полупрозрачная заливка с градиентом
+// и тонкая светлая рамка — glassmorphism в духе фирменного стиля.
 fun Modifier.glass(
     corner: Dp = 22.dp,
     borderColor: Color = Color.White.copy(alpha = 0.14f),
