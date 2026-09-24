@@ -1,20 +1,44 @@
-*.iml
-.gradle
-**/build
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/captures
-.externalNativeBuild
-.cxx
+# ===== Build artifacts =====
+**/build/
+build/
+.gradle/
+.kotlin/
+.cxx/
+.externalNativeBuild/
+captures/
+
+# ===== Local / machine-specific =====
 local.properties
-.kotlin
-.history
-!gradle/wrapper/gradle-wrapper.jar
+/local.properties
+*.iml
+
+# ===== IDE =====
+.idea/
+**/.idea/
+.DS_Store
+
+# ===== Nix / direnv / flake outputs =====
 /result
 /.direnv
+result
+flake.lock
+
+# ===== Environment / secrets (never commit) =====
+.env
+.env.*
+*.env
+*.env.*
+secrets/
+**/secrets/
+*.pem
+*.key
+*.keystore
+*.jks
+*.gpg
+*.asc
+
+# ===== OS / editor junk =====
+*~
+*.swp
+*.tmp
+Thumbs.db
